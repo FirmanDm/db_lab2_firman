@@ -2,6 +2,7 @@ import psycopg2
 import psycopg2.extras
 import matplotlib.pyplot as plt
 
+
 def years_best_revenue(cur):
     cur.execute('select movie_year, movie_revenue from movie;')
 
@@ -18,16 +19,23 @@ def years_best_revenue(cur):
     )
     plt.plot(years, revenue)
     plt.ticklabel_format(style='plain')
+    plt.xticks(years)
+    plt.xlabel('Year')
+    plt.ylabel('Revenue, $')
+    plt.title('Revenue of best film per year')
     plt.show()
+
 
 def genre_by_market_share(cur):
     cur.execute('select genre_name, genre_market_share from genre;')
 
     genres = []
     genre_ms = []
+    genre_label = []
     for result in cur.fetchall():
         genres.append(result['genre_name'])
         genre_ms.append(float(result['genre_market_share']))
+        genre_label.append(str(float(result['genre_market_share']))+'%')
 
     print(
         f"genre_by_market_share:"
@@ -35,9 +43,12 @@ def genre_by_market_share(cur):
         f"\n\tmarket_share={genre_ms}"
     )
     patches, texts = plt.pie(genre_ms, startangle=90)
+    plt.pie(genre_ms, startangle=90, labels=genre_label, rotatelabels=True, labeldistance=0.77,
+            textprops=dict(rotation_mode='anchor', va='center', ha='left'))
     plt.legend(patches, genres, loc="best")
     # Set aspect ratio to be equal so that pie is drawn as a circle.
     plt.axis('equal')
+    plt.title('Market share by genres')
     plt.tight_layout()
     plt.show()
 
@@ -58,6 +69,9 @@ def distributors_by_movies_num(cur):
     )
     plt.bar(dist, dist_movies_count)
     plt.xticks(dist)
+    plt.xlabel('Distributor id')
+    plt.ylabel('# of movies')
+    plt.title('Amount of movies from each distributor')
     plt.show()
 
 
